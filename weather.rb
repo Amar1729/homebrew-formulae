@@ -4,8 +4,8 @@
 class Weather < Formula
   desc ""
   homepage ""
-  url "https://github.com/Amar1729/weather/raw/master/archive/weather-1.0.0.tar.gz"
-  sha256 "de9a42adad1cab69600c389f109dd84c4f90062819f50238960ce107babf3ae8"
+  url "https://github.com/Amar1729/weather/raw/master/archive/weather-1.0.1.tar.gz"
+  sha256 "ff61efca6bb11ff4fc641eabd6532678169c4da4eedbd3686a45815952baf303"
   # depends_on "cmake" => :build
   
   bottle :unneeded
