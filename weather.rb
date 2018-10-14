@@ -8,8 +8,6 @@ class Weather < Formula
   sha256 "de9a42adad1cab69600c389f109dd84c4f90062819f50238960ce107babf3ae8"
   # depends_on "cmake" => :build
   
-  depends_on "curl"
-
   bottle :unneeded
 
   option "without-completions", "Do not install completions."
