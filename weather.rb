@@ -13,7 +13,7 @@ class Weather < Formula
   option "without-completions", "Do not install completions."
 
   def install
-      bin.install "weather.sh" => weather
+      bin.install "weather.sh" => "weather"
 
     if build.with? "completions"
         zsh_completion.install "completions/_weather"
