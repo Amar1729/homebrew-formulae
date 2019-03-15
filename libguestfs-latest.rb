@@ -67,16 +67,17 @@ class LibguestfsLatest < Formula
     # end
   end
 
-  devel do
-    url "http://libguestfs.org/download/1.31-development/libguestfs-1.31.7.tar.gz"
-    sha256 "62318ac89baef0dcd3f5bd27996435fd3449878c7e490d3566a4fd40777fa092"
-
-    patch do 
-      # Change program_name to avoid collision with gnulib
-      url "https://gist.github.com/zchee/2845dac68b8d71b6c1f5/raw/ade1096e057711ab50cf0310ceb9a19e176577d2/libguestfs-gnulib.patch"
-      sha256 "b88e85895494d29e3a0f56ef23a90673660b61cc6fdf64ae7e5fecf79546fdd0"
-    end
-  end
+# outdated devel
+#  devel do
+#    url "http://libguestfs.org/download/1.31-development/libguestfs-1.31.7.tar.gz"
+#    sha256 "62318ac89baef0dcd3f5bd27996435fd3449878c7e490d3566a4fd40777fa092"
+#
+#    patch do 
+#      # Change program_name to avoid collision with gnulib
+#      url "https://gist.github.com/zchee/2845dac68b8d71b6c1f5/raw/ade1096e057711ab50cf0310ceb9a19e176577d2/libguestfs-gnulib.patch"
+#      sha256 "b88e85895494d29e3a0f56ef23a90673660b61cc6fdf64ae7e5fecf79546fdd0"
+#    end
+#  end
 
   bottle do
     root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/libguestfs-v1.32.6"
