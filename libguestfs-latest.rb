@@ -78,6 +78,11 @@ class LibguestfsLatest < Formula
     end
   end
 
+  bottle do
+    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/libguestfs-v1.32.6"
+    sha256 "2125dc01861f51b0f82818c4cf1fc80479a31a96151d6fe9c25917c3b9a723e3" => :mojave
+  end
+
   depends_on "autoconf" => :build
   depends_on "automake-1.15" => :build
   depends_on "libtool" => :build
