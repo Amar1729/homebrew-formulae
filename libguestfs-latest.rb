@@ -241,22 +241,19 @@ class LibguestfsLatest < Formula
 #      # mkdir_p appliance_dir
 #    end
 
-    # installation into /usr/local/bin
-    #for f in "#{prefix}/opt/libguestfs-latest" do
-    #bin.install Dir["#{prefix}/opt/libguestfs-latest/bin/*"]
     bin.install_symlink Dir["bin/*"]
   end
 
   def caveats
-      # fix appliance path here
+    # fix appliance path here
     <<~EOS
       A fixed appliance is required for libguestfs to work on Mac OS X.
       Unless you choose to build --without-fixed-appliance, it's downloaded for
       you and placed in the following path:
-      #{HOMEBREW_PREFIX}/var/libguestfs-appliance
+      #{prefix}/var/libguestfs-appliance
 
       To use the appliance, add the following to your shell configuration:
-      export LIBGUESTFS_PATH=#{HOMEBREW_PREFIX}/var/libguestfs-appliance
+      export LIBGUESTFS_PATH=#{prefix}/var/libguestfs-appliance
       and use libguestfs binaries in the normal way.
 
     EOS
