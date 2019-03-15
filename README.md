@@ -8,3 +8,5 @@ Included:
   - doesn't bundle a .app, so can't be added as a Cask
 - [libguestfs](http://libguestfs.org/), a library for editing VM disk images
   - should be added to homebrew after some options are tested/removed
+- [matterhorn](https://github.com/matterhorn-chat/matterhorn) terminal mattermost client
+  - i don't feel like building it from source right now
