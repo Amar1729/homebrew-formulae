@@ -1,4 +1,4 @@
-class LibguestfsLatest < Formula
+class Libguestfs< Formula
   homepage "http://libguestfs.org/"
 
   stable do
@@ -81,7 +81,7 @@ class LibguestfsLatest < Formula
 
   bottle do
     root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/libguestfs-v1.32.6"
-    sha256 "2125dc01861f51b0f82818c4cf1fc80479a31a96151d6fe9c25917c3b9a723e3" => :mojave
+    sha256 "221d52bd7df0da8405a53990bc458cfaab25929138c3494e27709dcc469e4129" => :mojave
   end
 
   depends_on "autoconf" => :build
