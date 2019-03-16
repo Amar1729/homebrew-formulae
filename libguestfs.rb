@@ -2,20 +2,19 @@ class Libguestfs< Formula
   homepage "http://libguestfs.org/"
 
   stable do
-    url "http://libguestfs.org/download/1.36-stable/libguestfs-1.36.15.tar.gz"
-    sha256 "63f0c53a9e79801f4e74254e5b1f6450febb452aeb395d8d3d90f816cd8058ec"
+    url "http://download.libguestfs.org/1.40-stable/libguestfs-1.40.2.tar.gz"
+    sha256 "ad6562c48c38e922a314cb45a90996843d81045595c4917f66b02a6c2dfe8058"
 
     patch do
-      # Change program_name to avoid collision with gnulib
-      #url "https://gist.github.com/zchee/2845dac68b8d71b6c1f5/raw/ade1096e057711ab50cf0310ceb9a19e176577d2/libguestfs-gnulib.patch"
-	  url "https://gist.githubusercontent.com/Amar1729/541e66dff14fec0100931b64f78b8f38/raw/b543e5ee87c76c6a5dadc478ea272e141ee67665/libguestfs-gnulib.patch"
-      sha256 "a83b5330b58e5a3c386548558580b421971b4eb1a2c6ed60eee5a8f967d39a41"
+      # program_name and open_memstream.c
+      url "https://gist.githubusercontent.com/Amar1729/541e66dff14fec0100931b64f78b8f38/raw/27a13176be00ab7e3a13f3eec536b60709c30043/libguestfs-gnulib.patch"
+      sha256 "621269d78db5cf15e2961189d7714cfb3b6687bdd4d0d4be6b94b4d866e43c7e"
     end
-    patch do
-	  # Fix rpc/xdr.h includes (on macOS, include rpc/types.h first)
-	  url "https://gist.githubusercontent.com/Amar1729/1a9cf7f3e4d7ea598676405fbf81a609/raw/502be6eeeedfa8134a97c75659f74d709a133866/rpc-xdr.patch"
-      sha256 "5c649da91f969126929c4cc90ed17d08cd0d5990c79eb214aa3c8a061eb2ab89"
-    end
+    # patch do
+    #   # Fix rpc/xdr.h includes (on macOS, include rpc/types.h first)
+    #   url "https://gist.githubusercontent.com/Amar1729/1a9cf7f3e4d7ea598676405fbf81a609/raw/502be6eeeedfa8134a97c75659f74d709a133866/rpc-xdr.patch"
+    #   sha256 "5c649da91f969126929c4cc90ed17d08cd0d5990c79eb214aa3c8a061eb2ab89"
+    # end
     # patch do
     #   # Change program_name to avoid collision with gnulib
     #   url "https://gist.githubusercontent.com/shulima/a0ad4c21b9287a034a4c/raw/656caed670d811692ef8a255fcff94ccc19620d9/program-name.patch"
@@ -73,18 +72,17 @@ class Libguestfs< Formula
     # end
   end
 
-  bottle do
-    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/libguestfs-v1.36.15"
-    sha256 "bc8091440ba902f9aa967e76d6d39cceaba1b371def7fb5b47c5e69b3229d2b3" => :mojave
-  end
-
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
   depends_on "pkg-config" => :build
-  depends_on "truncate" => :build # shouldn't this conflict with something?
+  #depends_on "truncate" => :build # does this conflict with coreutils
   depends_on "bison" => :build # macOS bison is one minor revision too old
   depends_on "gnu-sed" => :build # some of the makefiles expect gnu sed functionality
+  depends_on "ocaml" => :build
+  depends_on "ocaml-findlib" => :build
+  depends_on "coreutils" # need realpath
+  depends_on "hivex"
   depends_on "qemu"
   depends_on "xz"
   depends_on "yajl"
@@ -94,6 +92,7 @@ class Libguestfs< Formula
   depends_on "cdrtools"
   depends_on "augeas"
   depends_on "pcre"
+  depends_on "jansson"
   depends_on :osxfuse
 
   # Bindings & tools
@@ -125,31 +124,37 @@ class Libguestfs< Formula
 
   # Since we can't build an appliance, the recommended way is to download a fixed one.
   resource "fixed_appliance" do
-    url "http://libguestfs.org/download/binaries/appliance/appliance-1.30.1.tar.xz"
-    sha256 "12d88227de9921cc40949b1ca7bbfc2f6cd6e685fa6ed2be3f21fdef97661be2"
+    #url "http://libguestfs.org/download/binaries/appliance/appliance-1.30.1.tar.xz"
+    #sha256 "12d88227de9921cc40949b1ca7bbfc2f6cd6e685fa6ed2be3f21fdef97661be2"
+	url "http://download.libguestfs.org/binaries/appliance/appliance-1.40.1.tar.xz"
+    sha256 "1aaf0bef18514b8e9ebd0c6130ed5188b6f6a7052e4891d5f3620078f48563e6"
   end
 
   def install
-    # configure doesn't detect ncurses correctly
-    ENV["LIBTINFO_CFLAGS"] = "-I/usr/local/opt/include/ncurses"
-    ENV["LIBTINFO_LIBS"] = "-lncurses"
-
     ENV["FUSE_CFLAGS"] = "-D_FILE_OFFSET_BITS=64 -D_DARWIN_USE_64_BIT_INODE -I/usr/local/include/osxfuse/fuse"
     ENV["FUSE_LIBS"] = "-losxfuse -pthread -liconv"
 
-    ENV["AUGEAS_CFLAGS"] = "-I/usr/local/opt/augeas/include"
-    ENV["AUGEAS_LIBS"] = "-L/usr/local/opt/augeas/lib"
+    %w[
+      ncurses
+      augeas
+      jansson
+      hivex
+    ].each do |ext|
+      ENV.prepend_path "PKG_CONFIG_PATH", "/usr/local/opt/#{ext}/lib/pkgconfig"
+    end
 
     args = [
+      "--disable-dependency-tracking",
+      "--disable-silent-rules",
+      "--prefix=#{prefix}",
+      "--with-distro=DARWIN",
       "--disable-probes",
       "--disable-appliance",
       "--disable-daemon",
-      # Not supporting OCaml bindings due to ocamlfind (required) not being packaged in homebrew.
       "--disable-ocaml",
       "--disable-lua",
       "--disable-haskell",
       "--disable-erlang",
-      "--disable-gtk-doc-html",
       "--disable-gobject",
     ]
 
@@ -163,6 +168,7 @@ class Libguestfs< Formula
       args << "--disable-golang"
     end
 
+    # update to 3 if we install these
     if build.with? "python"
       ENV.prepend_path "PKG_CONFIG_PATH", `python-config --prefix`.chomp + "/lib/pkgconfig"
       args << "--with-python-installdir=#{lib}/python2.7/site-packages"
@@ -180,6 +186,7 @@ class Libguestfs< Formula
       args << "--disable-ruby"
     end
 
+    # really should be built with java bindings...
     if build.with? :java
       args << "--with-java="+`#{Language::Java.java_home_cmd}`.chomp
     end
@@ -189,18 +196,15 @@ class Libguestfs< Formula
       inreplace "golang/Makefile.am", %r{^(golangsrcdir = )(.*)(GOROOT.*)(/src/)(pkg/)(\$\(pkg\).*)$}, "\\1#{lib}/golang\\4\\6"
     end
 
-    system "./configure", "--disable-dependency-tracking",
-                          "--disable-silent-rules",
-                          "--prefix=#{prefix}",
-                          *args
-
-    # ENV.deparallelize
+    system "./configure", *args
 
     # Build fails with just 'make install'
-	# fix for known race condition: https://bugzilla.redhat.com/show_bug.cgi?id=1614502
-	system "make", "-j1", "-C", "builder", "index-parse.c"
-	system "make", "-C", "builder", "index-scan.c"
+    # fix for known race condition: https://bugzilla.redhat.com/show_bug.cgi?id=1614502
+    ENV.deparallelize { system "make", "-C", "builder", "index-parse.c" }
+    system "make", "-C", "builder", "index-scan.c"
+    #ENV.deparallelize { system "make", "-C", "builder" }
     system "make"
+    #system "make", "check" # 5 FAILs :/
 
     if build.with? "php"
       # Put php bindings inside our lib
@@ -232,7 +236,7 @@ class Libguestfs< Formula
     # fix appliance path here
     <<~EOS
       A fixed appliance is required for libguestfs to work on Mac OS X.
-	  This formula downloads the appliance and places it in:
+      This formula downloads the appliance and places it in:
       #{prefix}/var/libguestfs-appliance
 
       To use the appliance, add the following to your shell configuration:
