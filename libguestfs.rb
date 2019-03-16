@@ -1,9 +1,15 @@
 class Libguestfs< Formula
   homepage "http://libguestfs.org/"
 
+# attempt for manual build:
+# ./configure --disable-dependency-tracking --disable-silent-rules --prefix=/usr/local --disable-ruby --disable-python --disable-golang --without-libvirt --disable-php --disable-perl --disable-probes --disable-appliance --disable-daemon --disable-ocaml --disable-lua --disable-haskell --disable-erlang --disable-gobject
+
+# current build breaks on _append_history symbol (gnulib?)
+# will have to take a look at patches
+
   stable do
-    url "http://libguestfs.org/download/1.36-stable/libguestfs-1.36.15.tar.gz"
-    sha256 "63f0c53a9e79801f4e74254e5b1f6450febb452aeb395d8d3d90f816cd8058ec"
+	url "http://download.libguestfs.org/1.40-stable/libguestfs-1.40.2.tar.gz"
+    sha256 "ad6562c48c38e922a314cb45a90996843d81045595c4917f66b02a6c2dfe8058"
 
     patch do
       # Change program_name to avoid collision with gnulib
@@ -73,11 +79,6 @@ class Libguestfs< Formula
     # end
   end
 
-  bottle do
-    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/libguestfs-v1.36.15"
-    sha256 "bc8091440ba902f9aa967e76d6d39cceaba1b371def7fb5b47c5e69b3229d2b3" => :mojave
-  end
-
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
@@ -94,6 +95,7 @@ class Libguestfs< Formula
   depends_on "cdrtools"
   depends_on "augeas"
   depends_on "pcre"
+  depends_on "jansson"
   depends_on :osxfuse
 
   # Bindings & tools
@@ -149,7 +151,7 @@ class Libguestfs< Formula
       "--disable-lua",
       "--disable-haskell",
       "--disable-erlang",
-      "--disable-gtk-doc-html",
+      #"--disable-gtk-doc-html", # don't need in 1.40.2
       "--disable-gobject",
     ]
 
