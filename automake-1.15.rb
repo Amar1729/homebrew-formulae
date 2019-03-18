@@ -12,12 +12,11 @@ class Automake115 < Formula
 
   depends_on "autoconf"
 
-  ## https://lists.gnu.org/archive/html/bug-automake/2018-04/msg00002.html
-  ## Remove this when applying any future 1.16.2 update.
-  #patch do
-  #  url "https://git.savannah.gnu.org/cgit/automake.git/patch/?id=a348d830659fffd2cfc42994524783b07e69b4b5"
-  #  sha256 "7a57ca2b91f7f3c0b168cf5ffbc8a1b2168f3886bcadcc15412281472dace3ce"
-  #end
+  bottle do
+    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/automake-1.15"
+    cellar :any_skip_relocation
+    sha256 "f81060a0b15b6846e6540bd489381eb644bf313f89000705f5ac33ce26157acf" => :mojave
+  end
 
   def install
     ENV["PERL"] = "/usr/bin/perl"
