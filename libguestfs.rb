@@ -102,9 +102,8 @@ class Libguestfs< Formula
   depends_on :osxfuse
 
   # Bindings & tools
-  depends_on "libvirt" => :optional
-  option "with-python", "Build with Python bindings"
-  depends_on "python" => :optional
+  depends_on "libvirt"
+  depends_on "python@2"
   option "with-java", "Build with Java bindings"
   depends_on :java => :optional
   option "with-perl", "Build with Perl bindings"
@@ -161,7 +160,9 @@ class Libguestfs< Formula
       "--disable-gobject",
     ]
 
-    args << "--without-libvirt" if build.without? "libvirt"
+    ENV.prepend_path "PKG_CONFIG_PATH", `python-config --prefix`.chomp + "/lib/pkgconfig"
+    args << "--with-python-installdir=#{lib}/python2.7/site-packages"
+
     args << "--disable-php"  if build.without? "php"
     args << "--disable-perl" if build.without? "perl"
 
@@ -169,13 +170,6 @@ class Libguestfs< Formula
       args << "--enable-golang"
     else
       args << "--disable-golang"
-    end
-
-    if build.with? "python"
-      ENV.prepend_path "PKG_CONFIG_PATH", `python-config --prefix`.chomp + "/lib/pkgconfig"
-      args << "--with-python-installdir=#{lib}/python2.7/site-packages"
-    else
-      args << "--disable-python"
     end
 
     if build.with? "ruby"
@@ -253,6 +247,9 @@ class Libguestfs< Formula
   def caveats
     # fix appliance path here
     <<~EOS
+      Bindings:
+        This Formula is built with Python bindings by default.
+
       A fixed appliance is required for libguestfs to work on Mac OS X.
       Unless you choose to build --without-fixed-appliance, it's downloaded for
       you and placed in the following path:
