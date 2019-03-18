@@ -109,9 +109,6 @@ class Libguestfs< Formula
   # depends_on "go" => :optional
   option "with-go", "Build with Go bindings"
 
-  # Download the precompiled appliance unless explicitly told not to.
-  option "without-fixed-appliance", "Not Recommended: Skip downloading the fixed-appliance(supermin kernel)"
-
   # The two required gnulib patches have been reported to gnulib mailing list, but with little effect so far.
   # patch do
   #   # Add an implementation of open_memstream for BSD/Mac.
@@ -222,26 +219,9 @@ class Libguestfs< Formula
       # (lib/"golang/src").install "#{ENV["GOPATH"]}/src"
     end
 
-    if build.with? "fixed-appliance"
-      libguestfs_path = "#{prefix}/var/libguestfs-appliance"
-      mkdir_p libguestfs_path
-      resource("fixed_appliance").stage(libguestfs_path)
-      # why tf can't homebrew create /usr/local/lib/guestfs here?
-    end
-    #    amar edits: move this to a different dir?
-#    Error: An exception occurred within a child process:
-#       Errno::EPERM: Operation not permitted @ dir_s_mkdir - /usr/local/lib/guestfs
-#    if build.with? "fixed-appliance"
-#      # The appliance doesn't change, and we don't want to copy 4GB for each new version
-#      # appliance_dir = "#{prefix}/var/appliance"
-#      # mkdir_p appliance_dir
-#      libguestfs_path = "/usr/local/lib/guestfs"
-#      mkdir_p libguestfs_path
-#      resource("fixed_appliance").stage(libguestfs_path)
-#      # (prefix/"var/appliance").install "/usr/local/lib/guestfs"
-#      # mkdir_p libguestfs_path
-#      # mkdir_p appliance_dir
-#    end
+    libguestfs_path = "#{prefix}/var/libguestfs-appliance"
+    mkdir_p libguestfs_path
+    resource("fixed_appliance").stage(libguestfs_path)
 
     bin.install_symlink Dir["bin/*"]
   end
@@ -250,8 +230,7 @@ class Libguestfs< Formula
     # fix appliance path here
     <<~EOS
       A fixed appliance is required for libguestfs to work on Mac OS X.
-      Unless you choose to build --without-fixed-appliance, it's downloaded for
-      you and placed in the following path:
+	  This formula downloads the appliance and places it in:
       #{prefix}/var/libguestfs-appliance
 
       To use the appliance, add the following to your shell configuration:
