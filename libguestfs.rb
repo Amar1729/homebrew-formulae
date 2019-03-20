@@ -2,13 +2,19 @@ class Libguestfs< Formula
   homepage "http://libguestfs.org/"
 
   stable do
-    url "http://libguestfs.org/download/1.32-stable/libguestfs-1.32.6.tar.gz"
-    sha256 "bbf4e2d63a9d5968769abfe5c0b38b9e4b021b301ca0359f92dbb2838ad85321"
+    url "http://libguestfs.org/download/1.36-stable/libguestfs-1.36.15.tar.gz"
+    sha256 "63f0c53a9e79801f4e74254e5b1f6450febb452aeb395d8d3d90f816cd8058ec"
 
     patch do
       # Change program_name to avoid collision with gnulib
-      url "https://gist.github.com/zchee/2845dac68b8d71b6c1f5/raw/ade1096e057711ab50cf0310ceb9a19e176577d2/libguestfs-gnulib.patch"
-      sha256 "b88e85895494d29e3a0f56ef23a90673660b61cc6fdf64ae7e5fecf79546fdd0"
+      #url "https://gist.github.com/zchee/2845dac68b8d71b6c1f5/raw/ade1096e057711ab50cf0310ceb9a19e176577d2/libguestfs-gnulib.patch"
+	  url "https://gist.githubusercontent.com/Amar1729/541e66dff14fec0100931b64f78b8f38/raw/b543e5ee87c76c6a5dadc478ea272e141ee67665/libguestfs-gnulib.patch"
+      sha256 "a83b5330b58e5a3c386548558580b421971b4eb1a2c6ed60eee5a8f967d39a41"
+    end
+    patch do
+	  # Fix rpc/xdr.h includes (on macOS, include rpc/types.h first)
+	  url "https://gist.githubusercontent.com/Amar1729/1a9cf7f3e4d7ea598676405fbf81a609/raw/502be6eeeedfa8134a97c75659f74d709a133866/rpc-xdr.patch"
+      sha256 "5c649da91f969126929c4cc90ed17d08cd0d5990c79eb214aa3c8a061eb2ab89"
     end
     # patch do
     #   # Change program_name to avoid collision with gnulib
@@ -67,30 +73,18 @@ class Libguestfs< Formula
     # end
   end
 
-# outdated devel
-#  devel do
-#    url "http://libguestfs.org/download/1.31-development/libguestfs-1.31.7.tar.gz"
-#    sha256 "62318ac89baef0dcd3f5bd27996435fd3449878c7e490d3566a4fd40777fa092"
-#
-#    patch do 
-#      # Change program_name to avoid collision with gnulib
-#      url "https://gist.github.com/zchee/2845dac68b8d71b6c1f5/raw/ade1096e057711ab50cf0310ceb9a19e176577d2/libguestfs-gnulib.patch"
-#      sha256 "b88e85895494d29e3a0f56ef23a90673660b61cc6fdf64ae7e5fecf79546fdd0"
-#    end
-#  end
-
   bottle do
-    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/libguestfs-v1.32.6-with-options"
-    rebuild 1
-    sha256 "01708ef43288f290f41c97d2b3f533285d1e730c9e726fc5b6dc3b5bdc3c88a8" => :mojave
+    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/libguestfs-v1.36.15"
+    sha256 "bc8091440ba902f9aa967e76d6d39cceaba1b371def7fb5b47c5e69b3229d2b3" => :mojave
   end
 
   depends_on "autoconf" => :build
-  depends_on "automake-1.15" => :build
+  depends_on "automake" => :build
   depends_on "libtool" => :build
   depends_on "pkg-config" => :build
-  depends_on "truncate" => :build # should this conflict with something?
-  # Most dependencies are listed in http://libguestfs.org/README.txt
+  depends_on "truncate" => :build # shouldn't this conflict with something?
+  depends_on "bison" => :build # macOS bison is one minor revision too old
+  depends_on "gnu-sed" => :build # some of the makefiles expect gnu sed functionality
   depends_on "qemu"
   depends_on "xz"
   depends_on "yajl"
@@ -203,6 +197,9 @@ class Libguestfs< Formula
     # ENV.deparallelize
 
     # Build fails with just 'make install'
+	# fix for known race condition: https://bugzilla.redhat.com/show_bug.cgi?id=1614502
+	system "make", "-j1", "-C", "builder", "index-parse.c"
+	system "make", "-C", "builder", "index-scan.c"
     system "make"
 
     if build.with? "php"
