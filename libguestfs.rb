@@ -84,8 +84,9 @@ class Libguestfs< Formula
   depends_on "automake" => :build
   depends_on "libtool" => :build
   depends_on "pkg-config" => :build
-  depends_on "truncate" => :build # should this conflict with something?
-  # Most dependencies are listed in http://libguestfs.org/README.txt
+  depends_on "truncate" => :build # shouldn't this conflict with something?
+  depends_on "bison" => :build # macOS bison is one minor revision too old
+  depends_on "gnu-sed" => :build # some of the makefiles expect gnu sed functionality
   depends_on "qemu"
   depends_on "xz"
   depends_on "yajl"
@@ -198,6 +199,9 @@ class Libguestfs< Formula
     # ENV.deparallelize
 
     # Build fails with just 'make install'
+	# fix for known race condition: https://bugzilla.redhat.com/show_bug.cgi?id=1614502
+	system "make", "-j1", "-C", "builder", "index-parse.c"
+	system "make", "-C", "builder", "index-scan.c"
     system "make"
 
     if build.with? "php"
