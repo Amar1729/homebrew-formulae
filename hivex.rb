@@ -16,31 +16,32 @@ class Hivex < Formula
     ENV["LDFLAGS"] = "-L/usr/local/opt/readline/lib"
     ENV["CPPFLAGS"] = "-I/usr/local/opt/readline/include"
 
-    # are all of these necessary?
     args = [
       "--prefix=#{prefix}",
       "--localstatedir=#{var}",
       "--mandir=#{man}",
       "--sysconfdir=#{etc}",
-      "--disable-ocamls",
+      "--disable-ocaml",
       "--disable-ruby",
     ]
 
-    # ENV["PYTHON"] = "/usr/local/bin/python3"
-    #
-    # ENV.prepend_path "PKG_CONFIG_PATH", `python-config --prefix`.chomp + "/lib/pkgconfig"
-    # args << "--with-python-installdir=#{lib}/python2.7/site-packages"
+    # no idea how to make this work
+    #ENV["PYTHON"] = "/usr/local/bin/python3"
+    #ENV.prepend_path "PKG_CONFIG_PATH", `/usr/local/bin/python3-config --prefix`.chomp + "/lib/pkgconfig"
+    #args << "--with-python-installdir=#{lib}/python3.7/site-packages"
     args << "--disable-python"
 
     system "./configure", *args
 
     # Build fails with just 'make install'
     system "make"
+    system "make", "check"
     system "make", "install"
   end
 
   test do
     # update this
+    #system "make", "check" # this doesn't work here (build files are already cleaned)
     system "true"
   end
 end
