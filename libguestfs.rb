@@ -82,6 +82,7 @@ class Libguestfs< Formula
   depends_on "ocaml" => :build
   depends_on "ocaml-findlib" => :build
   depends_on "coreutils" # need realpath
+  depends_on "hivex"
   depends_on "qemu"
   depends_on "xz"
   depends_on "yajl"
