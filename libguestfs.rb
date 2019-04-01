@@ -74,7 +74,7 @@ class Libguestfs< Formula
   end
 
   bottle do
-    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/libguestfs-v1.40.2"
+	root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/libguestfs-v1.40.2-hist"
     sha256 "7ba80d6e15f80f7c947727869b4f4d44f1193ce6f8eb6bdf43add7a9c409ae3d" => :mojave
   end
 
