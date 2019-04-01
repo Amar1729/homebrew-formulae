@@ -1,4 +1,5 @@
 class Libguestfs< Formula
+  desc "tools for accessing and modifying virtual machine disk images"
   homepage "http://libguestfs.org/"
 
   stable do
@@ -79,25 +80,24 @@ class Libguestfs< Formula
 
   depends_on "autoconf" => :build
   depends_on "automake" => :build
-  depends_on "libtool" => :build
-  depends_on "pkg-config" => :build
-  #depends_on "truncate" => :build # does this conflict with coreutils
   depends_on "bison" => :build # macOS bison is one minor revision too old
   depends_on "gnu-sed" => :build # some of the makefiles expect gnu sed functionality
+  depends_on "libtool" => :build
   depends_on "ocaml" => :build
   depends_on "ocaml-findlib" => :build
-  depends_on "coreutils" # need realpath
+  depends_on "pkg-config" => :build
+  depends_on "augeas"
+  depends_on "cdrtools"
+  depends_on "coreutils"
+  depends_on "gettext"
+  depends_on "glib"
   depends_on "hivex"
+  depends_on "jansson"
+  depends_on "pcre"
   depends_on "qemu"
+  depends_on "readline"
   depends_on "xz"
   depends_on "yajl"
-  depends_on "glib"
-  depends_on "gettext"
-  depends_on "readline"
-  depends_on "cdrtools"
-  depends_on "augeas"
-  depends_on "pcre"
-  depends_on "jansson"
   depends_on :osxfuse
 
   # Bindings & tools
