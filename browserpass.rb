@@ -1,14 +1,9 @@
 class Browserpass < Formula
-  version "3.0.4"
+  version "3.0.5"
   desc "This is a host application for browserpass browser extension providing it access to your password store."
   homepage "https://github.com/browserpass/browserpass-native"
   url "https://github.com/browserpass/browserpass-native/releases/download/#{version}/browserpass-darwin64-#{version}.tar.gz"
-  sha256 "5cea2a332d3bd58f14bd6d597b0e96937806cd991ef9fd4c916e6b2559746ee7"
-
-  patch do
-    url "https://patch-diff.githubusercontent.com/raw/browserpass/browserpass-native/pull/44.patch"
-    sha256 "bbefc9abec57130ce0d5bda9af923f54949b4729ac85ba1348d79ab50c355767"
-  end
+  sha256 "d62c63cfcd7f0d69d0c603362e7fb3882784a97ec694f6d269766533e12d45fb"
 
   resource "testfile" do
     url "https://github.com/browserpass/browserpass-native/files/3062744/request.hex.txt"
@@ -38,7 +33,7 @@ class Browserpass < Formula
     <<~EOF
       Due to homebrew formula limitations, this tap only installs the native binary.
          To install nativemessaginghost bindings for your browser, run the following:
-	  $ cd /usr/local/opt/browserpass/lib/browserpass
+      $ cd /usr/local/opt/browserpass/lib/browserpass
       $ DESTDIR='' PREFIX='/usr/local/opt/browserpass' make hosts-BROWSER-user
          Where BROWSER is one of the following:
       [chromium chrome vivaldi brave firefox]
