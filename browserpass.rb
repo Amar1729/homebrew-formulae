@@ -38,7 +38,7 @@ class Browserpass < Formula
     <<~EOF
       Due to homebrew formula limitations, this tap only installs the native binary.
          To install nativemessaginghost bindings for your browser, run the following:
-      $ cd /usr/local/opt/browserpass/lib
+	  $ cd /usr/local/opt/browserpass/lib/browserpass
       $ DESTDIR='' PREFIX='/usr/local/opt/browserpass' make hosts-BROWSER-user
          Where BROWSER is one of the following:
       [chromium chrome vivaldi brave firefox]
