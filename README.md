@@ -12,3 +12,5 @@ Included:
   - this version was a build dep for older versions of libguestfs
 - [matterhorn](https://github.com/matterhorn-chat/matterhorn) terminal mattermost client
   - i don't feel like building it from source right now
+- [browserpass](https://github.com/browserpass/browserpass-native) native binary for browserpass web extension
+  - homebrew-core won't accept as a formula since it works with an app (chrome/firefox), but it's not right for a cask
