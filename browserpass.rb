@@ -5,6 +5,12 @@ class Browserpass < Formula
   url "https://github.com/browserpass/browserpass-native/releases/download/#{version}/browserpass-darwin64-#{version}.tar.gz"
   sha256 "422bc6dd1270a877af6ac7801a75b4c4b57171d675c071470f31bc24196701e3"
 
+  bottle do
+    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/browserpass-3.0.6"
+    cellar :any_skip_relocation
+    sha256 "31b2faf15a7f2ba64897a4d741876c6d2b09ac9e309fa9cb2da230c1a0352506" => :mojave
+  end
+
   resource "testfile" do
     url "https://github.com/browserpass/browserpass-native/files/3062744/request.hex.txt"
     sha256 "83ea960015e5bd05e604c13233d8ed16a87c38f83212822e8d69c622dea21af0"
