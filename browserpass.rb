@@ -1,9 +1,9 @@
 class Browserpass < Formula
-  version "3.0.5"
+  version "3.0.6"
   desc "This is a host application for browserpass browser extension providing it access to your password store."
   homepage "https://github.com/browserpass/browserpass-native"
   url "https://github.com/browserpass/browserpass-native/releases/download/#{version}/browserpass-darwin64-#{version}.tar.gz"
-  sha256 "d62c63cfcd7f0d69d0c603362e7fb3882784a97ec694f6d269766533e12d45fb"
+  sha256 "422bc6dd1270a877af6ac7801a75b4c4b57171d675c071470f31bc24196701e3"
 
   resource "testfile" do
     url "https://github.com/browserpass/browserpass-native/files/3062744/request.hex.txt"
