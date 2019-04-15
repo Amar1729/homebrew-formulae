@@ -72,6 +72,11 @@ class LibguestfsAT136 < Formula
     # end
   end
 
+  bottle do
+    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/libguestfs-v1.36-lock"
+    sha256 "cd9deebd7e4dc0176692e237ec317392c09acf9cf3d8130abac865c38a3cde7b" => :mojave
+  end
+
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "bison" => :build # macOS bison is one minor revision too old
