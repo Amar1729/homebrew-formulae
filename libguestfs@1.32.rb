@@ -79,22 +79,13 @@ class LibguestfsAT132 < Formula
   depends_on "glib"
   depends_on "gettext"
   depends_on "readline"
+  depends_on "libvirt"
   depends_on "cdrtools"
   depends_on "augeas"
   depends_on "pcre"
   depends_on :osxfuse
 
   # Bindings & tools
-  depends_on "libvirt" => :optional
-  option "with-python", "Build with Python bindings"
-  depends_on "python" => :optional
-  option "with-java", "Build with Java bindings"
-  depends_on :java => :optional
-  option "with-perl", "Build with Perl bindings"
-  option "with-ruby", "Build with Ruby bindings"
-  option "with-php", "Build with PHP bindings"
-  # depends_on "go" => :optional
-  option "with-go", "Build with Go bindings"
 
   # The two required gnulib patches have been reported to gnulib mailing list, but with little effect so far.
   # patch do
@@ -139,72 +130,22 @@ class LibguestfsAT132 < Formula
       "--disable-erlang",
       "--disable-gtk-doc-html",
       "--disable-gobject",
+      "--disable-php",
+      "--disable-perl",
+      "--disable-golang",
+      "--disable-python",
+      "--disable-ruby",
     ]
-
-    args << "--without-libvirt" if build.without? "libvirt"
-    args << "--disable-php"  if build.without? "php"
-    args << "--disable-perl" if build.without? "perl"
-
-    if build.with? "go"
-      args << "--enable-golang"
-    else
-      args << "--disable-golang"
-    end
-
-    if build.with? "python"
-      ENV.prepend_path "PKG_CONFIG_PATH", `python-config --prefix`.chomp + "/lib/pkgconfig"
-      args << "--with-python-installdir=#{lib}/python2.7/site-packages"
-    else
-      args << "--disable-python"
-    end
-
-    if build.with? "ruby"
-      # Force ruby bindings to install locally
-      ruby_libdir = "#{lib}/ruby/site_ruby/#{RbConfig::CONFIG["ruby_version"]}"
-      ruby_archdir = "#{ruby_libdir}/#{RbConfig::CONFIG["sitearch"]}"
-      inreplace "ruby/Makefile.am", /\$\(RUBY_LIBDIR\)/, ruby_libdir
-      inreplace "ruby/Makefile.am", /\$\(RUBY_ARCHDIR\)/, ruby_archdir
-    else
-      args << "--disable-ruby"
-    end
-
-    if build.with? :java
-      args << "--with-java="+`#{Language::Java.java_home_cmd}`.chomp
-    end
-
-    if build.with? "go"
-      inreplace "golang/Makefile.am", %r{^(golangpkgdir = )(.*)(GOROOT.*)(/pkg/.*)$}, "\\1#{lib}/golang\\4"
-      inreplace "golang/Makefile.am", %r{^(golangsrcdir = )(.*)(GOROOT.*)(/src/)(pkg/)(\$\(pkg\).*)$}, "\\1#{lib}/golang\\4\\6"
-    end
 
     system "./configure", "--disable-dependency-tracking",
                           "--disable-silent-rules",
                           "--prefix=#{prefix}",
                           *args
 
-    # ENV.deparallelize
-
-    # Build fails with just 'make install'
     system "make"
-
-    if build.with? "php"
-      # Put php bindings inside our lib
-      inreplace "php/extension/Makefile", %r{^(EXTENSION_DIR = )(.*)(/php/.*)$}, "\\1#{lib}\\3"
-    end
 
     ENV["REALLY_INSTALL"] = "yes"
     system "make", "install"
-
-    if build.with? "go"
-      # Fix maked go files permission
-      # FileUtils.chmod_R "+w", "#{lib}/golang/src/libguestfs.org/guestfs"
-      # Fix not according Go fmt guideline
-      # system "gofmt", "-w", "#{lib}/golang/src/libguestfs.org/guestfs"
-      # Symlink $GOPATH instead $GOROOT
-      # TODO brew do not parse $GOROOT and $GOPATH
-      # (lib/"golang/pkg").install "#{ENV["GOPATH"]}/pkg"
-      # (lib/"golang/src").install "#{ENV["GOPATH"]}/src"
-    end
 
     libguestfs_path = "#{prefix}/var/libguestfs-appliance"
     mkdir_p libguestfs_path
@@ -214,21 +155,27 @@ class LibguestfsAT132 < Formula
   end
 
   def caveats
-      # fix appliance path here
     <<~EOS
       A fixed appliance is required for libguestfs to work on Mac OS X.
-      This Formula downloads the appliance and places it in:
-      #{prefix}/var/libguestfs-appliance
+      This formula downloads the appliance and places it in:
+        #{prefix}/var/libguestfs-appliance
 
       To use the appliance, add the following to your shell configuration:
-      export LIBGUESTFS_PATH=#{prefix}/var/libguestfs-appliance
+        export LIBGUESTFS_PATH=#{prefix}/var/libguestfs-appliance
       and use libguestfs binaries in the normal way.
+
+      For compilers to find libguestfs you may need to set:
+        export LDFLAGS="-L/usr/local/opt/libguestfs@1.32/lib"
+        export CPPFLAGS="-I/usr/local/opt/libguestfs@1.32/include"
+
+      For pkg-config to find libguestfs you may need to set:
+        export PKG_CONFIG_PATH="/usr/local/opt/libguestfs@1.32/lib/pkgconfig"
 
     EOS
   end
 
   test do
-    ENV["LIBGUESTFS_PATH"] = "#{var}/libguestfs-appliance"
-    system "#{bin}/libguestfs-test-tool", "-t 180"
+    ENV["LIBGUESTFS_PATH"] = "#{prefix}/var/libguestfs-appliance"
+    system "#{prefix}/bin/libguestfs-test-tool", "-t 180"
   end
 end
