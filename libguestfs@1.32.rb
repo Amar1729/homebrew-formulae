@@ -67,6 +67,11 @@ class LibguestfsAT132 < Formula
     # end
   end
 
+  bottle do
+    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/libguest-1.32-lock"
+    sha256 "5426851dbd5c26ce77a713e63c2df905b915a4a5182dbec0f7cb8c421488559e" => :mojave
+  end
+
   depends_on "autoconf" => :build
   depends_on "automake-1.15" => :build
   depends_on "libtool" => :build
