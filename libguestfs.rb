@@ -1,6 +1,6 @@
-class Libguestfs< Formula
-  desc "tools for accessing and modifying virtual machine disk images"
+class Libguestfs < Formula
   homepage "http://libguestfs.org/"
+  desc "tools for accessing and modifying virtual machine disk images"
 
   stable do
     url "http://download.libguestfs.org/1.40-stable/libguestfs-1.40.2.tar.gz"
@@ -73,11 +73,6 @@ class Libguestfs< Formula
     # end
   end
 
-  bottle do
-	root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/libguestfs-v1.40.2-hist"
-    sha256 "7ba80d6e15f80f7c947727869b4f4d44f1193ce6f8eb6bdf43add7a9c409ae3d" => :mojave
-  end
-
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "bison" => :build # macOS bison is one minor revision too old
@@ -129,8 +124,6 @@ class Libguestfs< Formula
 
   # Since we can't build an appliance, the recommended way is to download a fixed one.
   resource "fixed_appliance" do
-    #url "http://libguestfs.org/download/binaries/appliance/appliance-1.30.1.tar.xz"
-    #sha256 "12d88227de9921cc40949b1ca7bbfc2f6cd6e685fa6ed2be3f21fdef97661be2"
 	url "http://download.libguestfs.org/binaries/appliance/appliance-1.40.1.tar.xz"
     sha256 "1aaf0bef18514b8e9ebd0c6130ed5188b6f6a7052e4891d5f3620078f48563e6"
   end
@@ -161,6 +154,11 @@ class Libguestfs< Formula
       "--disable-haskell",
       "--disable-erlang",
       "--disable-gobject",
+      "--disable-php",
+      "--disable-perl",
+      "--disable-golang",
+      "--disable-python",
+      "--disable-ruby",
     ]
 
     args << "--without-libvirt" if build.without? "libvirt"
@@ -211,11 +209,6 @@ class Libguestfs< Formula
     system "make"
     #system "make", "check" # 5 FAILs :/
 
-    if build.with? "php"
-      # Put php bindings inside our lib
-      inreplace "php/extension/Makefile", %r{^(EXTENSION_DIR = )(.*)(/php/.*)$}, "\\1#{lib}\\3"
-    end
-
     ENV["REALLY_INSTALL"] = "yes"
     system "make", "install"
 
@@ -238,7 +231,6 @@ class Libguestfs< Formula
   end
 
   def caveats
-    # fix appliance path here
     <<~EOS
       A fixed appliance is required for libguestfs to work on Mac OS X.
       This formula downloads the appliance and places it in:
@@ -248,11 +240,18 @@ class Libguestfs< Formula
       export LIBGUESTFS_PATH=#{prefix}/var/libguestfs-appliance
       and use libguestfs binaries in the normal way.
 
+      For compilers to find libguestfs you may need to set:
+        export LDFLAGS="-L/usr/local/opt/libguestfs@1.32/lib"
+        export CPPFLAGS="-I/usr/local/opt/libguestfs@1.32/include"
+
+      For pkg-config to find libguestfs you may need to set:
+        export PKG_CONFIG_PATH="/usr/local/opt/libguestfs@1.32/lib/pkgconfig"
+
     EOS
   end
 
   test do
-    ENV["LIBGUESTFS_PATH"] = "#{var}appliance"
-    system "#{bin}/libguestfs-test-tool", "-t 180"
+    ENV["LIBGUESTFS_PATH"] = "#{prefix}/var/libguestfs-appliance"
+    system "#{prefix}/bin/libguestfs-test-tool", "-t 180"
   end
 end
