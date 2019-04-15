@@ -73,34 +73,17 @@ class LibguestfsAT132 < Formula
   depends_on "pkg-config" => :build
   depends_on "truncate" => :build # should this conflict with something?
   # Most dependencies are listed in http://libguestfs.org/README.txt
+  depends_on "augeas"
+  depends_on "cdrtools"
+  depends_on "gettext"
+  depends_on "glib"
+  depends_on "libvirt"
+  depends_on "pcre"
   depends_on "qemu"
+  depends_on "readline"
   depends_on "xz"
   depends_on "yajl"
-  depends_on "glib"
-  depends_on "gettext"
-  depends_on "readline"
-  depends_on "libvirt"
-  depends_on "cdrtools"
-  depends_on "augeas"
-  depends_on "pcre"
   depends_on :osxfuse
-
-  # Bindings & tools
-
-  # The two required gnulib patches have been reported to gnulib mailing list, but with little effect so far.
-  # patch do
-  #   # Add an implementation of open_memstream for BSD/Mac.
-  #   # Using Eric Blake's proposal originally published here: https://lists.gnu.org/archive/html/bug-gnulib/2010-04/msg00379.html
-  #   # and mentioned again here: http://lists.gnu.org/archive/html/bug-gnulib/2015-02/msg00083.html
-  #   url "https://gist.githubusercontent.com/shulima/93138eb342fe94273edd/raw/c75eac3a7f536dca526f52cd8cb5c0d6ce8beecc/gnulib-open_memstream.patch"
-  #   sha256 "d62f539def7300e4155bf2447b3c22049938a279957a4a97964d2d04440b58ce"
-  # end
-  # patch do
-  #   # Add a program_name equivalent for Mac.
-  #   # http://lists.gnu.org/archive/html/bug-gnulib/2015-02/msg00078.html
-  #   url "https://gist.githubusercontent.com/shulima/d851f8f35526db5e2fe9/raw/f80f6a73ec102bbdea2394d9bd3482b400853f2c/gnulib-program_name.patch"
-  #   sha256 "d17d1962b98a3418a335915de8a2da219e4598d42c24555bbbc5b0c1177dd38c"
-  # end
 
   # Since we can't build an appliance, the recommended way is to download a fixed one.
   resource "fixed_appliance" do
@@ -109,7 +92,6 @@ class LibguestfsAT132 < Formula
   end
 
   def install
-    # configure doesn't detect ncurses correctly
     ENV["LIBTINFO_CFLAGS"] = "-I/usr/local/opt/include/ncurses"
     ENV["LIBTINFO_LIBS"] = "-lncurses"
 
@@ -123,7 +105,6 @@ class LibguestfsAT132 < Formula
       "--disable-probes",
       "--disable-appliance",
       "--disable-daemon",
-      # Not supporting OCaml bindings due to ocamlfind (required) not being packaged in homebrew.
       "--disable-ocaml",
       "--disable-lua",
       "--disable-haskell",
