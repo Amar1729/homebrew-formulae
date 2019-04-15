@@ -1,4 +1,4 @@
-class LibguestfsLatest < Formula
+class LibguestfsAT132 < Formula
   homepage "http://libguestfs.org/"
 
   stable do
@@ -67,17 +67,6 @@ class LibguestfsLatest < Formula
     # end
   end
 
-  devel do
-    url "http://libguestfs.org/download/1.31-development/libguestfs-1.31.7.tar.gz"
-    sha256 "62318ac89baef0dcd3f5bd27996435fd3449878c7e490d3566a4fd40777fa092"
-
-    patch do 
-      # Change program_name to avoid collision with gnulib
-      url "https://gist.github.com/zchee/2845dac68b8d71b6c1f5/raw/ade1096e057711ab50cf0310ceb9a19e176577d2/libguestfs-gnulib.patch"
-      sha256 "b88e85895494d29e3a0f56ef23a90673660b61cc6fdf64ae7e5fecf79546fdd0"
-    end
-  end
-
   depends_on "autoconf" => :build
   depends_on "automake-1.15" => :build
   depends_on "libtool" => :build
@@ -106,9 +95,6 @@ class LibguestfsLatest < Formula
   option "with-php", "Build with PHP bindings"
   # depends_on "go" => :optional
   option "with-go", "Build with Go bindings"
-
-  # Download the precompiled appliance unless explicitly told not to.
-  option "without-fixed-appliance", "Not Recommended: Skip downloading the fixed-appliance(supermin kernel)"
 
   # The two required gnulib patches have been reported to gnulib mailing list, but with little effect so far.
   # patch do
@@ -220,30 +206,10 @@ class LibguestfsLatest < Formula
       # (lib/"golang/src").install "#{ENV["GOPATH"]}/src"
     end
 
-    if build.with? "fixed-appliance"
-      libguestfs_path = "#{prefix}/var/libguestfs-appliance"
-      mkdir_p libguestfs_path
-      resource("fixed_appliance").stage(libguestfs_path)
-      # why tf can't homebrew create /usr/local/lib/guestfs here?
-    end
-    #    amar edits: move this to a different dir?
-#    Error: An exception occurred within a child process:
-#       Errno::EPERM: Operation not permitted @ dir_s_mkdir - /usr/local/lib/guestfs
-#    if build.with? "fixed-appliance"
-#      # The appliance doesn't change, and we don't want to copy 4GB for each new version
-#      # appliance_dir = "#{prefix}/var/appliance"
-#      # mkdir_p appliance_dir
-#      libguestfs_path = "/usr/local/lib/guestfs"
-#      mkdir_p libguestfs_path
-#      resource("fixed_appliance").stage(libguestfs_path)
-#      # (prefix/"var/appliance").install "/usr/local/lib/guestfs"
-#      # mkdir_p libguestfs_path
-#      # mkdir_p appliance_dir
-#    end
+    libguestfs_path = "#{prefix}/var/libguestfs-appliance"
+    mkdir_p libguestfs_path
+    resource("fixed_appliance").stage(libguestfs_path)
 
-    # installation into /usr/local/bin
-    #for f in "#{prefix}/opt/libguestfs-latest" do
-    #bin.install Dir["#{prefix}/opt/libguestfs-latest/bin/*"]
     bin.install_symlink Dir["bin/*"]
   end
 
@@ -251,19 +217,18 @@ class LibguestfsLatest < Formula
       # fix appliance path here
     <<~EOS
       A fixed appliance is required for libguestfs to work on Mac OS X.
-      Unless you choose to build --without-fixed-appliance, it's downloaded for
-      you and placed in the following path:
-      #{HOMEBREW_PREFIX}/var/libguestfs-appliance
+      This Formula downloads the appliance and places it in:
+      #{prefix}/var/libguestfs-appliance
 
       To use the appliance, add the following to your shell configuration:
-      export LIBGUESTFS_PATH=#{HOMEBREW_PREFIX}/var/libguestfs-appliance
+      export LIBGUESTFS_PATH=#{prefix}/var/libguestfs-appliance
       and use libguestfs binaries in the normal way.
 
     EOS
   end
 
   test do
-    ENV["LIBGUESTFS_PATH"] = "#{var}appliance"
+    ENV["LIBGUESTFS_PATH"] = "#{var}/libguestfs-appliance"
     system "#{bin}/libguestfs-test-tool", "-t 180"
   end
 end
