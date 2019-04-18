@@ -4,6 +4,12 @@ class Hivex < Formula
   url "http://download.libguestfs.org/hivex/hivex-1.3.18.tar.gz"
   sha256 "8a1e788fd9ea9b6e8a99705ebd0ff8a65b1bdee28e319c89c4a965430d0a7445"
 
+  bottle do
+    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/hivex-1.3.18"
+    cellar :any
+    sha256 "151558b4141e3e66badbb6b63582e2f3d80cecbdd4fadfc7808fac522fa97ba4" => :mojave
+  end
+
   # note : building hivex from source requires libxml, but not homebrew build?
   depends_on "readline"
   # depends_on "python"
