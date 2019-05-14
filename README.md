@@ -19,6 +19,8 @@ brew install <formula>
 - [matterhorn](https://github.com/matterhorn-chat/matterhorn) terminal mattermost client
   - i don't feel like building it from source right now
   - [homebrew issue](https://github.com/Homebrew/homebrew-core/pull/36196)
+- [xi-mac](https://github.com/xi-editor/xi-mac) - fast, modern text editor with a backend written in rust
+  - very alpha stage: doesn't have stable releases yet
 
 ### Obsolete
 - 04/06/2019: [Ghidra added to homebrew-cask](https://github.com/Homebrew/homebrew-cask/pull/59872)
