@@ -1,51 +1,93 @@
 class FbClang < Formula
   desc "facebook clang plugins"
-  url "https://github.com/facebook/facebook-clang-plugins/tarball/36266f6c86041896bed32ffec0637fefbc4463e0"
-  sha256 "6105f42e925a3db304eddf74acbfb63cbf59183c0bcd3e2c174c705d3398e1a0"
+  version = "7.0.1"
+  url "https://github.com/facebook/facebook-clang-plugins/raw/master/clang/src/llvm_clang_compiler-rt_libcxx_libcxxabi_openmp-#{version}.tar.xz"
+  sha256 "1372c12adfa8347a800adfaf9fbfb9b7748ea0c794df82bfd06f6771c6ae8819"
 
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "camlp4" => :build
   depends_on "cmake" => :build
   depends_on "gmp" => :build
-  depends_on "gnu-sed" => :build
   depends_on "libtool" => :build
   depends_on "mpfr" => :build
   depends_on "ocaml" => :build
   depends_on "opam" => :build
   depends_on "pkg-config" => :build
   depends_on "python@2" => :build
+  depends_on "sqlite" => :build
   depends_on :x11 => :build
   depends_on :xcode => :build
 
   keg_only :provided_by_macos, "Conflicts with system clang"
 
+  # use specific tag, though patches change infrequently
+  tag = "36266f6c86041896bed32ffec0637fefbc4463e0"
+
+  patch :p2 do
+    url "https://github.com/facebook/facebook-clang-plugins/raw/#{tag}/clang/src/err_ret_local_block.patch"
+    sha256 "2f6f4a492f7cdf9ceb5745d9b72e0073f608506528314aa0dddc6e789f870897"
+  end
+
+  patch :p2 do
+    url "https://github.com/facebook/facebook-clang-plugins/raw/#{tag}/clang/src/mangle_suppress_errors.patch"
+    sha256 "7330688109735c68e274edecaabeb5d28d38f58d60bbe4add01827a9af16dbd7"
+  end
+
+  resource "attr_dump_cpu_cases_compilation_fix" do
+    url "https://github.com/facebook/facebook-clang-plugins/raw/#{tag}/clang/src/attr_dump_cpu_cases_compilation_fix.patch"
+    sha256 "a559df5f789f4166008cb63f301606f2b5075f4de9e6f22a51615c6d0c8706de"
+  end
+
+  resource "opam" do
+    url "https://github.com/facebook/infer/raw/v0.16.0/opam"
+    sha256 "bcc8b1f858d907a728e5149de675ac73b0a1b42775e3f6bcd598029c0b148499"
+  end
+
+  resource "opam.locked" do
+    url "https://github.com/facebook/infer/raw/v0.16.0/opam.locked"
+    sha256 "f17930bacd2a97713520e88eea1c39c29131ae9f5bce4b8a2d8234c43edfbeb1"
+  end
+
   def install
+    # needed to build clang
     ENV.permit_arch_flags
+
+    # Apple's libstdc++ is too old to build LLVM
     ENV.libcxx if ENV.compiler == :clang
 
-    # avoid rebuilding this until the damn formula works
+    resources.each { |r| r.stage(buildpath) }
+
+    ENV.prepend_path "PKG_CONFIG_PATH", "/usr/local/opt/sqlite3/lib/pkgconfig"
+
+    # clang doesn't need opam deps after build (?)
     opamroot = HOMEBREW_CACHE/"opam"
-    #opamroot = libexec/"opam"
     ENV["OPAMROOT"] = opamroot
     ENV["OPAMYES"] = "1"
 
-    # setup opam
-    # disable opam sandboxing because homebrew is sandboxed already
-    #system "opam", "init", "--bare", "--no-setup", "--disable-sandboxing"
-    #system "opam", "switch", "create", "#{ocaml_version}"
+    # hardcoded: infer 0.16.0
+    ocaml_version = "ocaml-variants.4.07.1+flambda"
 
-    ## install ocamlbuild proper version here so we don't have to deal with reinstalls ?
-    #system "opam", "install", "ocamlbuild=#{ocamlbuild_version}"
-    #oPATH = ENV["PATH"]
-    #ENV["PATH"] = "/usr/bin:" + ENV["PATH"]
-    #system "opam", "install", "mlgmpidl=#{mlgmpidl_version}"
-    #ENV["PATH"] = oPATH
-    #system "opam", "install", "utop"
+    # infer 0.16.0: mlgmpidl_version = 1.2.7
+    mlgmpidl_version = File.read("opam.locked").match(/mlgmpidl\".+\"(.+)\"/)[1]
+    # infer 0.16.0: ocamlbuild_version = 0.12.0
+    ocamlbuild_version = File.read("opam.locked").match(/\"ocamlbuild\".+\"(.+)\"/)[1]
 
-      #-DCMAKE_C_FLAGS="$CFLAGS $CMAKE_C_FLAGS"
-      #-DCMAKE_CXX_FLAGS="$CXXFLAGS $CMAKE_CXX_FLAGS"
-      #-DCMAKE_SHARED_LINKER_FLAGS="$LDFLAGS $CMAKE_SHARED_LINKER_FLAGS"
+    begin
+      # setup opam (disable opam sandboxing because homebrew is sandboxed already)
+      system "opam", "init", "--bare", "--no-setup", "--disable-sandboxing"
+      system "opam", "switch", "create", ocaml_version.to_s
+    rescue
+      ENV["OPAMSWITCH"] = ocaml_version.to_s
+    end
+
+    system "opam", "install", "ocamlbuild=#{ocamlbuild_version}"
+    original_path = ENV["PATH"]
+    ENV["PATH"] = "/usr/bin:" + ENV["PATH"]
+    system "opam", "install", "mlgmpidl=#{mlgmpidl_version}"
+    ENV["PATH"] = original_path
+    system "opam", "install", "--deps-only", "infer", buildpath, "--locked"
+
     llvm_args = %W[
       -DCMAKE_C_FLAGS=#{ENV.cflags}
       -DCMAKE_CXX_FLAGS=#{ENV.cppflags}
@@ -64,64 +106,21 @@ class FbClang < Formula
       -DLLVM_INSTALL_UTILS=OFF
       -DLIBOMP_ARCH=x86_64
 
-      -DCMAKE_INSTALL_PREFIX=#{prefix}/install
+      -DCMAKE_INSTALL_PREFIX=#{prefix}
       -DCMAKE_BUILD_TYPE=Release
     ]
 
-    #cd "clang/src" do
-    mkdir buildpath/"llvm" do
-        system "tar", "--extract", "--file", buildpath/"clang/src/llvm_clang_compiler-rt_libcxx_libcxxabi_openmp-7.0.1.tar.xz"
+    mkdir buildpath/"build" do
+      system "mkdir", "-p", "docs/ocamldoc/html"
 
-        patch :p1 do
-          url "https://github.com/facebook/facebook-clang-plugins/blob/36266f6c86041896bed32ffec0637fefbc4463e0/clang/src/err_ret_local_block.patch"
-          sha256 ""
-        end
-
-        patch :p1 do
-          url "https://github.com/facebook/facebook-clang-plugins/blob/36266f6c86041896bed32ffec0637fefbc4463e0/clang/src/mangle_suppress_errors.patch"
-          sha256 ""
-        end
-
-        mkdir "build" do
-          system "mkdir", "-p", "docs/ocamldoc/html"
-
-          system "cmake", "-G", "Unix Makefiles", "../llvm", *llvm_args
-          system "make"
-          system "./bin/clang", "--version"
-          system "make", "install"
-        end
+      system "opam", "config", "exec", "--", "cmake", "-G", "Unix Makefiles", "../", *llvm_args
+      system "opam", "config", "exec", "--", "make"
+      system "opam", "config", "exec", "--", "make", "install"
     end
-
-    # just bypass stripping altogether?
 
     cd prefix do
-      patch :p1 do
-        url "https://github.com/facebook/facebook-clang-plugins/blob/36266f6c86041896bed32ffec0637fefbc4463e0/clang/src/attr_dump_cpu_cases_compilation_fix.patch"
-        sha256 ""
-      end
+      system "patch -p1 < #{buildpath}/attr_dump_cpu_cases_compilation_fix.patch"
     end
-
-    cd "clang/src" do
-      srcs = %w[
-        llvm_clang_compiler-rt_libcxx_libcxxabi_openmp-7.0.1.tar.xz
-        setup.sh
-      ]
-      system "shasum", "-a", "256", *srcs, ">", "installed.version"
-    end
-
-    # not sure if these installs work properly as postinstall failed
-    # whatever i'll keep it around
-    # (should probably come back to it though)
-
-    libexec.install Dir["clang-ocaml"]
-    libexec.install Dir["clang"]
-    libexec.install Dir["libtooling"]
-    libexec.install Dir["scripts"]
-
-    libexec.install Dir["*"]
-
-    bin.install Dir["clang/install/bin/*"]
-    include.install Dir["clang/install/include/*"]
   end
 
   test do
