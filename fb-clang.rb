@@ -5,24 +5,20 @@ class FbClang < Formula
 
   depends_on "autoconf" => :build
   depends_on "automake" => :build
+  depends_on "camlp4" => :build
   depends_on "cmake" => :build
+  depends_on "gmp" => :build
   depends_on "gnu-sed" => :build
   depends_on "libtool" => :build
+  depends_on "mpfr" => :build
+  depends_on "ocaml" => :build
+  depends_on "opam" => :build
   depends_on "pkg-config" => :build
-  depends_on "camlp4"
-  depends_on "gmp"
-  depends_on "mpfr"
-  depends_on "ocaml"
-  depends_on "opam"
-  depends_on "python@2"
-  depends_on :x11
-  depends_on :xcode
+  depends_on "python@2" => :build
+  depends_on :x11 => :build
+  depends_on :xcode => :build
 
-  conflicts_with "llvm", :because => "both provide `clang` and related binaries"
-
-  #resource "clang_src" do
-  #  url "https://github.com/facebook/facebook-clang-plugins/blob/master/clang/src/llvm_clang_compiler-rt_libcxx_libcxxabi_openmp-7.0.1.tar.xz"
-  #end
+  keg_only :provided_by_macos, "Conflicts with system clang"
 
   def install
     ENV.permit_arch_flags
@@ -115,6 +111,7 @@ class FbClang < Formula
 
     # not sure if these installs work properly as postinstall failed
     # whatever i'll keep it around
+    # (should probably come back to it though)
 
     libexec.install Dir["clang-ocaml"]
     libexec.install Dir["clang"]
