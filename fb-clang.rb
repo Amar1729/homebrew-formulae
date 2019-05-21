@@ -4,6 +4,18 @@ class FbClang < Formula
   url "https://github.com/facebook/facebook-clang-plugins/raw/master/clang/src/llvm_clang_compiler-rt_libcxx_libcxxabi_openmp-#{version}.tar.xz"
   sha256 "1372c12adfa8347a800adfaf9fbfb9b7748ea0c794df82bfd06f6771c6ae8819"
 
+  bottle do
+    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/fb-clang-v7.0.1"
+    cellar :any
+    sha256 "b80e6a46ac77fb8a48709a1478c724c407a824a8cb4c923d14337f8bf03ce385" => :mojave
+  end
+
+  # Clang cannot find system headers if Xcode CLT is not installed
+  pour_bottle? do
+    reason "The bottle needs the Xcode CLT to be installed."
+    satisfy { MacOS::CLT.installed? }
+  end
+
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "camlp4" => :build
