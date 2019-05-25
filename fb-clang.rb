@@ -1,7 +1,7 @@
 class FbClang < Formula
   desc "facebook clang plugins"
   version = "7.0.1"
-  url "https://github.com/facebook/facebook-clang-plugins/raw/master/clang/src/llvm_clang_compiler-rt_libcxx_libcxxabi_openmp-#{version}.tar.xz"
+  url "https://github.com/facebook/facebook-clang-plugins/raw/36266f6c86041896bed32ffec0637fefbc4463e0/clang/src/llvm_clang_compiler-rt_libcxx_libcxxabi_openmp-#{version}.tar.xz"
   sha256 "1372c12adfa8347a800adfaf9fbfb9b7748ea0c794df82bfd06f6771c6ae8819"
 
   bottle do
@@ -18,7 +18,6 @@ class FbClang < Formula
 
   depends_on "autoconf" => :build
   depends_on "automake" => :build
-  depends_on "camlp4" => :build
   depends_on "cmake" => :build
   depends_on "gmp" => :build
   depends_on "libtool" => :build
@@ -61,6 +60,16 @@ class FbClang < Formula
     sha256 "f17930bacd2a97713520e88eea1c39c29131ae9f5bce4b8a2d8234c43edfbeb1"
   end
 
+  resource "build-infer.sh" do
+    url "https://github.com/facebook/infer/raw/v0.16.0/build-infer.sh"
+    sha256 "001e1f8428be226dff727161ed6a0625cc8de08bc1a2f4c90a9d6a247dcc4bf2"
+  end
+
+  resource "opam_utils.sh" do
+    url "https://github.com/facebook/infer/raw/master/scripts/opam_utils.sh"
+    sha256 "747e70a421feb11e8e08b9cd5ba110429c36698919df932db5901fd376c36894"
+  end
+
   def install
     # needed to build clang
     ENV.permit_arch_flags
@@ -70,35 +79,18 @@ class FbClang < Formula
 
     resources.each { |r| r.stage(buildpath) }
 
-    ENV.prepend_path "PKG_CONFIG_PATH", "/usr/local/opt/sqlite3/lib/pkgconfig"
+    ENV.prepend_path "PKG_CONFIG_PATH", Formula["sqlite"].opt_lib/"pkgconfig"
 
     # clang doesn't need opam deps after build (?)
     opamroot = HOMEBREW_CACHE/"opam"
     ENV["OPAMROOT"] = opamroot
     ENV["OPAMYES"] = "1"
 
-    # hardcoded: infer 0.16.0
-    ocaml_version = "ocaml-variants.4.07.1+flambda"
-
-    # infer 0.16.0: mlgmpidl_version = 1.2.7
-    mlgmpidl_version = File.read("opam.locked").match(/mlgmpidl\".+\"(.+)\"/)[1]
-    # infer 0.16.0: ocamlbuild_version = 0.12.0
-    ocamlbuild_version = File.read("opam.locked").match(/\"ocamlbuild\".+\"(.+)\"/)[1]
-
-    begin
-      # setup opam (disable opam sandboxing because homebrew is sandboxed already)
-      system "opam", "init", "--bare", "--no-setup", "--disable-sandboxing"
-      system "opam", "switch", "create", ocaml_version.to_s
-    rescue
-      ENV["OPAMSWITCH"] = ocaml_version.to_s
-    end
-
-    system "opam", "install", "ocamlbuild=#{ocamlbuild_version}"
-    original_path = ENV["PATH"]
-    ENV["PATH"] = "/usr/bin:" + ENV["PATH"]
-    system "opam", "install", "mlgmpidl=#{mlgmpidl_version}"
-    ENV["PATH"] = original_path
-    system "opam", "install", "--deps-only", "infer", buildpath, "--locked"
+    inreplace "build-infer.sh", "--no-setup", "--no-setup --disable-sandboxing"
+    inreplace "build-infer.sh", "scripts/", ""
+    chmod 0755, "build-infer.sh"
+    chmod 0755, "opam_utils.sh"
+    system "./build-infer.sh", "--only-setup-opam", "--yes"
 
     llvm_args = %W[
       -DCMAKE_C_FLAGS=#{ENV.cflags}
