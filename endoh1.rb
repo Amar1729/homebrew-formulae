@@ -5,6 +5,12 @@ class Endoh1 < Formula
   url "https://www.ioccc.org/2012/endoh1/endoh1.c"
   sha256 "de593a8af39ec73e120bacecae2a09bc9858da6457894840f2f816513cc18fb4"
 
+  bottle do
+    cellar :any_skip_relocation
+    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/endoh1-v1.0"
+    sha256 "3fc4cc39955189643dc635bdf2c2be1676dae6d161130df7259bff768653e899" => :mojave
+  end
+
   # color variant
   resource "color" do
     url "https://www.ioccc.org/2012/endoh1/endoh1_color.c"
