@@ -26,6 +26,8 @@ brew install <formula>
   - bottle built for version used in infer v0.16.0 (clang 7.0.1)
   - possibly should be hosted as a bottle with homebrew to be used as a dependency with infer? would make recompilation of infer much faster
     - maintainers probably won't want that, so i'm hosting it here for now
+- [endoh1](https://www.ioccc.org/2012/endoh1/hint.html)
+  - neat IOCCC submission on fluid dynamics rendered as ascii
 
 ### Obsolete
 - 04/06/2019: [Ghidra added to homebrew-cask](https://github.com/Homebrew/homebrew-cask/pull/59872)
