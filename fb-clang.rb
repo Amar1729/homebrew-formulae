@@ -1,13 +1,13 @@
 class FbClang < Formula
   desc "facebook clang plugins"
-  version = "7.0.1"
-  url "https://github.com/facebook/facebook-clang-plugins/raw/36266f6c86041896bed32ffec0637fefbc4463e0/clang/src/llvm_clang_compiler-rt_libcxx_libcxxabi_openmp-#{version}.tar.xz"
-  sha256 "1372c12adfa8347a800adfaf9fbfb9b7748ea0c794df82bfd06f6771c6ae8819"
+  version = "8.0.0"
+  url "https://github.com/facebook/facebook-clang-plugins/raw/dc42763b2e43d19518b6d69554a606bb7eaa0f29/clang/src/llvm_clang_compiler-rt_libcxx_libcxxabi_openmp-#{version}.tar.xz"
+  sha256 "ce840caa36a0fdf7ce1deabc45b34be341ce386d5d710bf4b2f06f3fe5e7f6da"
 
   bottle do
-    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/fb-clang-v7.0.1"
     cellar :any
-    sha256 "b80e6a46ac77fb8a48709a1478c724c407a824a8cb4c923d14337f8bf03ce385" => :mojave
+    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/fb-clang-v8.0.0"
+    sha256 "f064f156bf5a688e40bbeac903d725b1ce80c350ae3c5c1a83a959358280c2c3" => :mojave
   end
 
   # Clang cannot find system headers if Xcode CLT is not installed
@@ -25,7 +25,6 @@ class FbClang < Formula
   depends_on "ocaml" => :build
   depends_on "opam" => :build
   depends_on "pkg-config" => :build
-  depends_on "python@2" => :build
   depends_on "sqlite" => :build
   depends_on :x11 => :build
   depends_on :xcode => :build
@@ -33,7 +32,7 @@ class FbClang < Formula
   keg_only :provided_by_macos, "Conflicts with system clang"
 
   # use specific tag, though patches change infrequently
-  tag = "36266f6c86041896bed32ffec0637fefbc4463e0"
+  tag = "dc42763b2e43d19518b6d69554a606bb7eaa0f29"
 
   patch :p2 do
     url "https://github.com/facebook/facebook-clang-plugins/raw/#{tag}/clang/src/err_ret_local_block.patch"
@@ -43,11 +42,6 @@ class FbClang < Formula
   patch :p2 do
     url "https://github.com/facebook/facebook-clang-plugins/raw/#{tag}/clang/src/mangle_suppress_errors.patch"
     sha256 "7330688109735c68e274edecaabeb5d28d38f58d60bbe4add01827a9af16dbd7"
-  end
-
-  resource "attr_dump_cpu_cases_compilation_fix" do
-    url "https://github.com/facebook/facebook-clang-plugins/raw/#{tag}/clang/src/attr_dump_cpu_cases_compilation_fix.patch"
-    sha256 "a559df5f789f4166008cb63f301606f2b5075f4de9e6f22a51615c6d0c8706de"
   end
 
   resource "opam" do
@@ -67,7 +61,7 @@ class FbClang < Formula
 
   resource "opam_utils.sh" do
     url "https://github.com/facebook/infer/raw/master/scripts/opam_utils.sh"
-    sha256 "747e70a421feb11e8e08b9cd5ba110429c36698919df932db5901fd376c36894"
+    sha256 "0ec52e9c6d8d65f6b54563bc10acc0347daacbd90cd684e035b63654d892ecfa"
   end
 
   def install
@@ -88,6 +82,7 @@ class FbClang < Formula
 
     inreplace "build-infer.sh", "--no-setup", "--no-setup --disable-sandboxing"
     inreplace "build-infer.sh", "scripts/", ""
+    inreplace "build-infer.sh", "opam install", "PATH=/usr/bin:$PATH\n    opam install"
     chmod 0755, "build-infer.sh"
     chmod 0755, "opam_utils.sh"
     system "./build-infer.sh", "--only-setup-opam", "--yes"
@@ -120,10 +115,6 @@ class FbClang < Formula
       system "opam", "config", "exec", "--", "cmake", "-G", "Unix Makefiles", "../", *llvm_args
       system "opam", "config", "exec", "--", "make"
       system "opam", "config", "exec", "--", "make", "install"
-    end
-
-    cd prefix do
-      system "patch -p1 < #{buildpath}/attr_dump_cpu_cases_compilation_fix.patch"
     end
   end
 
