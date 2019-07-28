@@ -21,11 +21,13 @@ brew install <formula>
   - [homebrew issue](https://github.com/Homebrew/homebrew-core/pull/36196)
 - [xi-mac](https://github.com/xi-editor/xi-mac) - fast, modern text editor with a backend written in rust
   - very alpha stage: doesn't have stable releases yet
-- [fb-clang](http://github.com/facebook/facebook-clang-plugins/)
-  - custom clang used for C analyzers in the [infer static analysis tool](http://github.com/facebook/infer)
-  - bottle built for version used in infer v0.16.0 (clang 7.0.1)
-  - possibly should be hosted as a bottle with homebrew to be used as a dependency with infer? would make recompilation of infer much faster
-    - maintainers probably won't want that, so i'm hosting it here for now
+- [infer](http://github.com/facebook/infer)
+  - static analysis tool for c/++, objective c, and java
+  - dependency: [fb-clang](http://github.com/facebook/facebook-clang-plugins/)
+    - custom clang used for C analyzers in the [infer static analysis tool](http://github.com/facebook/infer)
+    - bottle built for version used in infer v0.17.0 (clang 8.0.0)
+    - possibly should be hosted as a bottle with homebrew to be used as a dependency with infer? would make recompilation of infer much faster
+      - maintainers probably won't want that, so i'm hosting it here for now
 - [endoh1](https://www.ioccc.org/2012/endoh1/hint.html)
   - neat IOCCC submission on fluid dynamics rendered as ascii
 
