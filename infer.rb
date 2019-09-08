@@ -9,8 +9,8 @@ class Infer < Formula
 
   bottle do
     cellar :any
-    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/infer-v0.17.0"
-    sha256 "09c090712b60567f3f7e7f238297c0783ecac9cdec6fb3c4068d952c870bae1f" => :mojave
+    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/infer-0.17.0_1"
+    sha256 "2cb80680224d361556c559a9f4c7d5efe9fd2037c41f7bbb86fb9d8b6ef7725c" => :mojave
   end
 
   depends_on "autoconf" => :build

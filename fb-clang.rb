@@ -7,8 +7,8 @@ class FbClang < Formula
 
   bottle do
     cellar :any
-    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/fb-clang-v8.0.0"
-    sha256 "f064f156bf5a688e40bbeac903d725b1ce80c350ae3c5c1a83a959358280c2c3" => :mojave
+	root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/infer-0.17.0_1"
+    sha256 "dab3694fc43ccc1eca62c300cceb12aad0d49c1f937cf2c7c84a03e340ddfff6" => :mojave
   end
 
   # Clang cannot find system headers if Xcode CLT is not installed
