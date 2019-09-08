@@ -3,6 +3,7 @@ class FbClang < Formula
   version = "8.0.0"
   url "https://github.com/facebook/facebook-clang-plugins/raw/dc42763b2e43d19518b6d69554a606bb7eaa0f29/clang/src/llvm_clang_compiler-rt_libcxx_libcxxabi_openmp-#{version}.tar.xz"
   sha256 "ce840caa36a0fdf7ce1deabc45b34be341ce386d5d710bf4b2f06f3fe5e7f6da"
+  revision 1
 
   bottle do
     cellar :any
@@ -44,26 +45,6 @@ class FbClang < Formula
     sha256 "7330688109735c68e274edecaabeb5d28d38f58d60bbe4add01827a9af16dbd7"
   end
 
-  resource "opam" do
-    url "https://github.com/facebook/infer/raw/v0.16.0/opam"
-    sha256 "bcc8b1f858d907a728e5149de675ac73b0a1b42775e3f6bcd598029c0b148499"
-  end
-
-  resource "opam.locked" do
-    url "https://github.com/facebook/infer/raw/v0.16.0/opam.locked"
-    sha256 "f17930bacd2a97713520e88eea1c39c29131ae9f5bce4b8a2d8234c43edfbeb1"
-  end
-
-  resource "build-infer.sh" do
-    url "https://github.com/facebook/infer/raw/v0.16.0/build-infer.sh"
-    sha256 "001e1f8428be226dff727161ed6a0625cc8de08bc1a2f4c90a9d6a247dcc4bf2"
-  end
-
-  resource "opam_utils.sh" do
-    url "https://github.com/facebook/infer/raw/master/scripts/opam_utils.sh"
-    sha256 "0ec52e9c6d8d65f6b54563bc10acc0347daacbd90cd684e035b63654d892ecfa"
-  end
-
   def install
     # needed to build clang
     ENV.permit_arch_flags
@@ -71,21 +52,16 @@ class FbClang < Formula
     # Apple's libstdc++ is too old to build LLVM
     ENV.libcxx if ENV.compiler == :clang
 
-    resources.each { |r| r.stage(buildpath) }
-
     ENV.prepend_path "PKG_CONFIG_PATH", Formula["sqlite"].opt_lib/"pkgconfig"
 
     # clang doesn't need opam deps after build (?)
-    opamroot = HOMEBREW_CACHE/"opam"
-    ENV["OPAMROOT"] = opamroot
+    ENV["OPAMROOT"] = HOMEBREW_CACHE/"opam"
     ENV["OPAMYES"] = "1"
 
-    inreplace "build-infer.sh", "--no-setup", "--no-setup --disable-sandboxing"
-    inreplace "build-infer.sh", "scripts/", ""
-    inreplace "build-infer.sh", "opam install", "PATH=/usr/bin:$PATH\n    opam install"
-    chmod 0755, "build-infer.sh"
-    chmod 0755, "opam_utils.sh"
-    system "./build-infer.sh", "--only-setup-opam", "--yes"
+    system "opam", "init", "--bare", "--no-setup", "--disable-sandboxing"
+    # check facebook/infer/build-infer.sh for infer_switch to use
+    system "opam", "switch", "create", "ocaml-variants.4.07.1+flambda"
+    system "opam", "install", "ctypes", "ounit"
 
     llvm_args = %W[
       -DCMAKE_C_FLAGS=#{ENV.cflags}
@@ -116,6 +92,10 @@ class FbClang < Formula
       system "opam", "config", "exec", "--", "make"
       system "opam", "config", "exec", "--", "make", "install"
     end
+
+    system "strip", "-x", *Dir[prefix/"bin/*"]
+    system "strip", "-x", *Dir[prefix/"lib/**/*.dylib"]
+    system "strip", "-x", *Dir[prefix/"lib/**/*.a"]
   end
 
   test do
