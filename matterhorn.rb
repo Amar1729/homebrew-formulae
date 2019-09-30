@@ -1,8 +1,9 @@
 class Matterhorn < Formula
   desc "Unix terminal client for the Mattermost chat system"
   homepage "https://github.com/matterhorn-chat/matterhorn"
-  url "https://github.com/matterhorn-chat/matterhorn/releases/download/50200.1.1/matterhorn-50200.1.1-Darwin-x86_64.tar.bz2"
-  sha256 "3ae6a19ecd47eeddb303970e77d5fd5379a64eda3c9b430ec80c6fd6a6429705"
+  version = "50200.5.0"
+  url "https://github.com/matterhorn-chat/matterhorn/releases/download/#{version}/matterhorn-#{version}-Darwin-x86_64.tar.bz2"
+  sha256 "c91af30caf00e39ad65851f07e9e6fd7036ba460032af5477c143dbcde642827"
 
   resource "sample_config" do
     url "https://raw.githubusercontent.com/matterhorn-chat/matterhorn/524c6439b4f9b2a423e07781098afec00081cc49/sample-config.ini"
