@@ -13,6 +13,7 @@ brew install <formula>
 - [libguestfs](http://libguestfs.org/), a library for editing VM disk images
   - should be added to homebrew after some options are tested/removed
   - related: [cmake, cdrtools, hivex issue](https://github.com/Homebrew/legacy-homebrew/pull/2765) in `legacy-homebrew`
+  - unfortunately, the older v1.32 is currently the most recent stable which builds+tests OK on mac. v1.36 times out on tests, and v1.40 has issues building (easily).
 - automake-1.15, (autotools)
   - this version was a build dep for older versions of libguestfs
   - current homebrew version >= 1.16
