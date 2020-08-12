@@ -6,9 +6,9 @@ class Browserpass < Formula
   sha256 "97b9a9068a3c88fb1d52d42a1712e199da5865a4c6f8352b9fe3eae1ee86c746"
 
   bottle do
-    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/browserpass-3.0.6"
+    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/browserpass-3.0.7"
     cellar :any_skip_relocation
-    sha256 "31b2faf15a7f2ba64897a4d741876c6d2b09ac9e309fa9cb2da230c1a0352506" => :mojave
+    sha256 "0d1b3c9497047ee387e154df75da8d90af9327b80af35391aeb02811c01d6e7a" => :catalina
   end
 
   resource "testfile" do
