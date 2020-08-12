@@ -1,9 +1,9 @@
 class Browserpass < Formula
-  version "3.0.6"
+  version "3.0.7"
   desc "This is a host application for browserpass browser extension providing it access to your password store."
   homepage "https://github.com/browserpass/browserpass-native"
   url "https://github.com/browserpass/browserpass-native/releases/download/#{version}/browserpass-darwin64-#{version}.tar.gz"
-  sha256 "422bc6dd1270a877af6ac7801a75b4c4b57171d675c071470f31bc24196701e3"
+  sha256 "97b9a9068a3c88fb1d52d42a1712e199da5865a4c6f8352b9fe3eae1ee86c746"
 
   bottle do
     root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/browserpass-3.0.6"
@@ -25,8 +25,8 @@ class Browserpass < Formula
   def install
     ENV["DESTDIR"] = ""
     ENV["PREFIX"] = prefix.to_s
-    ENV["BIN"] = "browserpass-darwin64"
 
+    inreplace "Makefile", "BIN = browserpass", "BIN = browserpass-darwin64"
     system "make", "configure"
     system "make", "install"
 
