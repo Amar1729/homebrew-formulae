@@ -1,8 +1,8 @@
 class Showkey < Formula
-  desc "A simple keystroke visualizer"
-  version "1.8"
+  desc "Simple keystroke visualizer"
   homepage "http://catb.org/esr/showkey/"
   url "http://www.catb.org/~esr/showkey/showkey-#{version}.tar.gz"
+  version "1.8"
   sha256 "31b6b064976a34d7d8e7a254db0397ba2dc50f1bb6e283038b17c48a358d50d3"
 
   patch :DATA
