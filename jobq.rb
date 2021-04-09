@@ -6,6 +6,6 @@ class Jobq < Formula
   bottle :unneeded
 
   def install
-      bin.install "jobq"
+    bin.install "jobq"
   end
 end
