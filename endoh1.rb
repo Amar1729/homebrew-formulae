@@ -1,15 +1,12 @@
 class Endoh1 < Formula
-  desc 'This program is a fluid simulator using “Smoothed-particle hydrodynamics (SPH)” method.'
+  desc "Fluid simulator using “Smoothed-particle hydrodynamics (SPH)” method"
   homepage "https://www.ioccc.org/2012/endoh1/hint.html"
-  version "1.0"
   url "https://www.ioccc.org/2012/endoh1/endoh1.c"
+  version "1.0"
   sha256 "de593a8af39ec73e120bacecae2a09bc9858da6457894840f2f816513cc18fb4"
+  revision 1
 
-  bottle do
-    cellar :any_skip_relocation
-    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/endoh1-v1.0"
-    sha256 "3fc4cc39955189643dc635bdf2c2be1676dae6d161130df7259bff768653e899" => :mojave
-  end
+  bottle :unneeded
 
   # color variant
   resource "color" do
@@ -104,7 +101,7 @@ class Endoh1 < Formula
   def install
     resources.each { |f| f.stage(buildpath) }
 
-    cflags = %W[
+    cflags = %w[
       -DG=1
       -DP=4
       -DV=8
@@ -112,8 +109,8 @@ class Endoh1 < Formula
       -lm
     ]
 
-    system "gcc", "endoh1.c", "-o", "endoh1", *cflags
-    system "gcc", "endoh1_color.c", "-o", "endoh1-color", *cflags
+    system ENV.cc.to_s, "endoh1.c", "-o", "endoh1", *cflags
+    system ENV.cc.to_s, "endoh1_color.c", "-o", "endoh1-color", *cflags
 
     bin.install "endoh1"
     bin.install "endoh1-color"
@@ -125,17 +122,17 @@ class Endoh1 < Formula
 
   def caveats
     <<~EOS
-
-      First of all, the source code itself serves as an initial configuration. Preprocessing directives (such as #include)’s # serve as walls.
-
-      Examples have been installed to #{prefix}/libexec/examples.
-      
-      note: this is my own formula for Yusuke Endoh's work. Check out the intro video:
-      https://www.youtube.com/watch?v=QMYfkOtYYlg
-
-      or his github:
-      https://github.com/mame/
-
+      #{"      "}
+                  First of all, the source code itself serves as an initial configuration. Preprocessing directives (such as #include)’s # serve as walls.
+      #{"      "}
+                  Examples have been installed to #{prefix}/libexec/examples.
+            #{"      "}
+                  note: this is my own formula for Yusuke Endoh's work. Check out the intro video:
+                  https://www.youtube.com/watch?v=QMYfkOtYYlg
+      #{"      "}
+                  or his github:
+                  https://github.com/mame/
+      #{"      "}
     EOS
   end
 
