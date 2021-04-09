@@ -18,9 +18,10 @@ class Matterhorn < Formula
     resource("sample_config").stage(cfg_path)
   end
 
-  def caveats; <<~EOS
-	Sample configuration file staged:
-	  cp #{prefix}/etc/sample-config.ini ~/.config/matterhorn/config.ini
+  def caveats
+    <<~EOS
+      Sample configuration file staged:
+        cp #{prefix}/etc/sample-config.ini ~/.config/matterhorn/config.ini
     EOS
   end
 
