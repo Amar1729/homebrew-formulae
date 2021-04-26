@@ -1,8 +1,7 @@
 class Browserpass < Formula
   desc "Host application for browser extension providing access to your password store"
   homepage "https://github.com/browserpass/browserpass-native"
-  url "https://github.com/browserpass/browserpass-native/releases/download/#{version}/browserpass-darwin64-#{version}.tar.gz"
-  version "3.0.7"
+  url "https://github.com/browserpass/browserpass-native/releases/download/3.0.7/browserpass-darwin64-3.0.7.tar.gz"
   sha256 "97b9a9068a3c88fb1d52d42a1712e199da5865a4c6f8352b9fe3eae1ee86c746"
 
   bottle do
@@ -39,7 +38,7 @@ class Browserpass < Formula
       ********************************************************************************
       * To configure your browser, RUN THE FOLLOWING:
 
-      $ PREFIX='/usr/local/opt/browserpass' make hosts-BROWSER-user -f /usr/local/opt/browserpass/lib/browserpass/Makefile
+      $ PREFIX='#{prefix}' make hosts-BROWSER-user -f '#{prefix}/lib/browserpass/Makefile'
 
       * Where BROWSER is one of the following: [chromium chrome vivaldi brave firefox]
       ********************************************************************************
