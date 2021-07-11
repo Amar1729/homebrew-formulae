@@ -7,6 +7,7 @@ class Wp < Formula
   bottle :unneeded
 
   depends_on "coreutils"
+  depends_on "imagemagick"
 
   def install
     bin.install "wp"
