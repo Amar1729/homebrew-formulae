@@ -6,8 +6,6 @@ class Endoh1 < Formula
   sha256 "de593a8af39ec73e120bacecae2a09bc9858da6457894840f2f816513cc18fb4"
   revision 1
 
-  bottle :unneeded
-
   # color variant
   resource "color" do
     url "https://www.ioccc.org/2012/endoh1/endoh1_color.c"
