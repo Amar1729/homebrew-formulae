@@ -3,8 +3,6 @@ class Jobq < Formula
   homepage "https://github.com/Amar1729/jobq/"
   head "https://github.com/Amar1729/jobq.git"
 
-  bottle :unneeded
-
   def install
     bin.install "jobq"
   end
