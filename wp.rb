@@ -4,8 +4,6 @@ class Wp < Formula
   sha256 "ff61efca6bb11ff4fc641eabd6532678169c4da4eedbd3686a45815952baf303"
   head "https://github.com/Amar1729/wp.git"
 
-  bottle :unneeded
-
   depends_on "coreutils"
   depends_on "imagemagick"
 
