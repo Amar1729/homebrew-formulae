@@ -6,6 +6,12 @@ class Endoh1 < Formula
   sha256 "de593a8af39ec73e120bacecae2a09bc9858da6457894840f2f816513cc18fb4"
   revision 1
 
+  bottle do
+    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/endoh1-1.0_1"
+    sha256 cellar: :any_skip_relocation, catalina:     "7a27545f10053cb885506c47f5f2d2146a0aaf6616f12fb559fd63c0c132aae5"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "ec54a600b2e9bef3d5e137f00d0c5fc5f84396fbe1aa57db2f9f32ecfa5154c8"
+  end
+
   # color variant
   resource "color" do
     url "https://www.ioccc.org/2012/endoh1/endoh1_color.c"
