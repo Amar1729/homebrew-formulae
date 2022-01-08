@@ -5,9 +5,9 @@ class Wp < Formula
   sha256 "374246089fcf5ea0fc3008877f3831319e894481b1abfffe091addea9badba48"
 
   bottle do
-    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/wp-1.0"
-    sha256 cellar: :any_skip_relocation, catalina:     "fea79f60c29a33c6cd9001c75b29ba9d8269a80f2b578f9a4853d799530e47da"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "e80ae4d7486c2d1de352fd4a2a0b58fe88780cdd6b33f70cc06345ac53e3a105"
+    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/wp-1.1.6"
+    sha256 cellar: :any_skip_relocation, big_sur:      "51f53601882e9f196fa07bef1034698db0abe6bb88bf55bc2be28b9e30a2c50d"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "58dbe3df3efcb317cfeca49b678b88f152da23fb32d03c0f10f93ad6524cb6df"
   end
 
   depends_on "coreutils"
