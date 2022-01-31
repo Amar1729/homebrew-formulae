@@ -1,8 +1,8 @@
 class Wp < Formula
   desc "Wrapper script for pywal with per-desktop support and other bells and whistles"
   homepage "https://github.com/Amar1729/wp"
-  url "https://github.com/Amar1729/wp/archive/refs/tags/v1.1.6.tar.gz"
-  sha256 "374246089fcf5ea0fc3008877f3831319e894481b1abfffe091addea9badba48"
+  url "https://github.com/Amar1729/wp/archive/refs/tags/v1.1.7.tar.gz"
+  sha256 "0b315c8efe5e59a5ec7ce5db66d75bed85a000cfb481fc8c7f52c5c39fc6faee"
 
   bottle do
     root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/wp-1.1.6"
