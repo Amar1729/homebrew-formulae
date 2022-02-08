@@ -25,7 +25,7 @@ class Browserpass < Formula
     ENV["DESTDIR"] = ""
     ENV["PREFIX"] = prefix.to_s
 
-    inreplace "Makefile", "BIN = browserpass", "BIN = browserpass-darwin64"
+    inreplace "Makefile", "BIN ?= browserpass", "BIN ?= browserpass-darwin64"
     system "make", "configure"
     system "make", "install"
 
