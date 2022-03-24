@@ -4,6 +4,13 @@ class Showkey < Formula
   url "http://www.catb.org/~esr/showkey/showkey-1.8.tar.gz"
   sha256 "31b6b064976a34d7d8e7a254db0397ba2dc50f1bb6e283038b17c48a358d50d3"
 
+  bottle do
+    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/showkey-1.8"
+    rebuild 1
+    sha256 cellar: :any_skip_relocation, big_sur:      "e1b7980ab01590c9f2b8190e71514e1969ab892348aa96bee6f970d4f1eb42a5"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "0a4118dba2b3f0c64a2812401c7844f932d7ae5b4ef9ab6d3069b4549f4c12ad"
+  end
+
   patch :DATA
 
   def install
