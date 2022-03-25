@@ -11,9 +11,8 @@ class Browserpass < Formula
   end
 
   bottle do
-    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/browserpass-3.0.7"
-    rebuild 1
-    sha256 cellar: :any_skip_relocation, catalina: "232e182d192f95f769ff74c9d441e2dd8229c55cf77e120c43ff97e133cb9afb"
+    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/browserpass-3.0.8"
+    sha256 cellar: :any_skip_relocation, big_sur: "cb6a4b25ba168a94a6984a70e4d4ee89e0a9af09ff7dede4fffbb76e52fa6a13"
   end
 
   depends_on "coreutils" => :build
