@@ -1,12 +1,13 @@
 class Browserpass < Formula
   desc "Host application for browser extension providing access to your password store"
   homepage "https://github.com/browserpass/browserpass-native"
+  version = "3.0.9"
 
   if Hardware::CPU.arm?
-    url "https://github.com/browserpass/browserpass-native/releases/download/3.0.8/browserpass-darwin-arm64-3.0.8.tar.gz"
+    url "https://github.com/browserpass/browserpass-native/releases/download/#{version}/browserpass-darwin-arm64-#{version}.tar.gz"
     sha256 "f0a21c7610fb9c68a2f1b8aa8c4116678a2318e61b0b60067d79b5b23bcd4502"
   else
-    url "https://github.com/browserpass/browserpass-native/releases/download/3.0.8/browserpass-darwin64-3.0.8.tar.gz"
+    url "https://github.com/browserpass/browserpass-native/releases/download/#{version}/browserpass-darwin64-#{version}.tar.gz"
     sha256 "a4bd59a0d2fe74dfb16cca8d47011415eaa19d5da39a8c60ac948a491cfa7214"
   end
 
