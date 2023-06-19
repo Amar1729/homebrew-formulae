@@ -14,7 +14,10 @@ class Browserpass < Formula
   depends_on "go" => :build
   depends_on "gpg"
   depends_on "pinentry"
-  depends_on "pinentry-mac"
+
+  on_macos do
+    depends_on "pinentry-mac"
+  end
 
   resource "testfile" do
     url "https://github.com/browserpass/browserpass-native/files/3062744/request.hex.txt"
