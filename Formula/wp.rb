@@ -1,8 +1,8 @@
 class Wp < Formula
   desc "Wrapper script for pywal with per-desktop support and other bells and whistles"
   homepage "https://github.com/Amar1729/wp"
-  url "https://github.com/Amar1729/wp/archive/refs/tags/v1.1.7.tar.gz"
-  sha256 "0b315c8efe5e59a5ec7ce5db66d75bed85a000cfb481fc8c7f52c5c39fc6faee"
+  url "https://github.com/Amar1729/wp/archive/refs/tags/v1.2.0.tar.gz"
+  sha256 "ab9af91dde1991f7eb17ceb296bab218ccb163ad23fcf75a2a85a9b071423169"
 
   bottle do
     root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/wp-1.1.7"
@@ -12,12 +12,14 @@ class Wp < Formula
 
   depends_on "coreutils"
   depends_on "imagemagick"
+  # because wal uses pidof to check whether kitty is running?
+  depends_on "pidof"
 
   def install
     bin.install "wp"
   end
 
   test do
-    system "wp"
+    system "#{bin}/wp"
   end
 end
