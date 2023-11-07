@@ -1,14 +1,8 @@
 class Browserpass < Formula
   desc "Host application for browser extension providing access to your password store"
   homepage "https://github.com/browserpass/browserpass-native"
-
-  if Hardware::CPU.arm?
-    url "https://github.com/browserpass/browserpass-native/releases/download/3.0.8/browserpass-darwin-arm64-3.0.8.tar.gz"
-    sha256 "f0a21c7610fb9c68a2f1b8aa8c4116678a2318e61b0b60067d79b5b23bcd4502"
-  else
-    url "https://github.com/browserpass/browserpass-native/releases/download/3.0.8/browserpass-darwin64-3.0.8.tar.gz"
-    sha256 "a4bd59a0d2fe74dfb16cca8d47011415eaa19d5da39a8c60ac948a491cfa7214"
-  end
+  url "https://github.com/browserpass/browserpass-native/archive/refs/tags/3.1.0.tar.gz"
+  sha256 "df90e9a02faa0081fe8bce78a8ecef1e4394f642955f18f452ee0079be85816e"
 
   bottle do
     root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/browserpass-3.0.8"
@@ -17,9 +11,13 @@ class Browserpass < Formula
 
   depends_on "coreutils" => :build
   depends_on "gnu-sed" => :build
+  depends_on "go" => :build
   depends_on "gpg"
   depends_on "pinentry"
-  depends_on "pinentry-mac"
+
+  on_macos do
+    depends_on "pinentry-mac"
+  end
 
   resource "testfile" do
     url "https://github.com/browserpass/browserpass-native/files/3062744/request.hex.txt"
@@ -30,12 +28,8 @@ class Browserpass < Formula
     ENV["DESTDIR"] = ""
     ENV["PREFIX"] = prefix.to_s
 
-    if Hardware::CPU.arm?
-      inreplace "Makefile", "BIN ?= browserpass", "BIN ?= browserpass-darwin-arm64"
-    else
-      inreplace "Makefile", "BIN ?= browserpass", "BIN ?= browserpass-darwin64"
-    end
     system "make", "configure"
+    system "make"
     system "make", "install"
 
     # NOT possible to symlink the hosts files from a homebrew formula, since they go under HOME
@@ -59,10 +53,6 @@ class Browserpass < Formula
     resource("testfile").stage(testpath)
     # fails with 14: $HOME/.password-store doesn't exist, since homebrew uses its own $HOME
     # a return value other than 14 is incorrect here
-    if Hardware::CPU.arm?
-      shell_output("#{prefix}/bin/browserpass-darwin-arm64 < #{testpath}/request.hex.txt 2>/dev/null", 14)
-    else
-      shell_output("#{prefix}/bin/browserpass-darwin64 < #{testpath}/request.hex.txt 2>/dev/null", 14)
-    end
+    shell_output("#{prefix}/bin/browserpass < #{testpath}/request.hex.txt 2>/dev/null", 14)
   end
 end
