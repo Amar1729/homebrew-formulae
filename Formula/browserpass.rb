@@ -4,11 +4,6 @@ class Browserpass < Formula
   url "https://github.com/browserpass/browserpass-native/archive/refs/tags/3.1.0.tar.gz"
   sha256 "df90e9a02faa0081fe8bce78a8ecef1e4394f642955f18f452ee0079be85816e"
 
-  bottle do
-    root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/browserpass-3.0.8"
-    sha256 cellar: :any_skip_relocation, big_sur: "cb6a4b25ba168a94a6984a70e4d4ee89e0a9af09ff7dede4fffbb76e52fa6a13"
-  end
-
   depends_on "coreutils" => :build
   depends_on "gnu-sed" => :build
   depends_on "go" => :build
